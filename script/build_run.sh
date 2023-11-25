@@ -28,8 +28,6 @@ then
   exit 1
 fi
 
-
-
 binary="/tmp/geoip_lookup_$(date +"%s")"
 
 cd "$(dirname "$0")/../main"
