@@ -1,3 +1,5 @@
+[![Lint](https://github.com/superstes/geoip-lookup-service/actions/workflows/lint.yml/badge.svg?branch=latest)](https://github.com/superstes/geoip-lookup-service/actions/workflows/lint.yml)
+
 # GeoIP Lookup Service
 
 Go-based microservice to perform IP lookups in local GeoIP databases.
