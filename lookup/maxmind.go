@@ -6,18 +6,18 @@ import (
 	"github.com/superstes/geoip-lookup-service/cnf"
 )
 
-func MaxMindCountry(ip net.IP, dataStructure interface{}) (interface{}, error) {
-	return lookupBase(ip, dataStructure, cnf.DB_COUNTRY)
+func MaxMindCountry(ip net.IP) (interface{}, error) {
+	return lookupBase(ip, cnf.MAXMIND_COUNTRY, cnf.DB_COUNTRY)
 }
 
-func MaxMindCity(ip net.IP, dataStructure interface{}) (interface{}, error) {
-	return lookupBase(ip, dataStructure, cnf.DB_CITY)
+func MaxMindCity(ip net.IP) (interface{}, error) {
+	return lookupBase(ip, cnf.MAXMIND_CITY, cnf.DB_CITY)
 }
 
-func MaxMindAsn(ip net.IP, dataStructure interface{}) (interface{}, error) {
-	return lookupBase(ip, dataStructure, cnf.DB_ASN)
+func MaxMindAsn(ip net.IP) (interface{}, error) {
+	return lookupBase(ip, cnf.MAXMIND_ASN, cnf.DB_ASN)
 }
 
-func MaxMindPrivacy(ip net.IP, dataStructure interface{}) (interface{}, error) {
-	return lookupBase(ip, dataStructure, cnf.DB_PRIVACY)
+func MaxMindPrivacy(ip net.IP) (interface{}, error) {
+	return lookupBase(ip, cnf.MAXMIND_PRIVACY, cnf.DB_PRIVACY)
 }

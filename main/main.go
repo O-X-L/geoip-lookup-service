@@ -14,6 +14,7 @@ func welcome() {
 	fmt.Println("/ /_/ /  __/ /_/ // // ____/  / /___/ /_/ / /_/ / ,< / /_/ / /_/ /")
 	fmt.Println("\\____/\\___/\\____/___/_/      /_____/\\____/\\____/_/|_|\\__,_/ .___/ ")
 	fmt.Println("                                                         /_/      ")
+	fmt.Printf("Version: %v\n", cnf.VERSION)
 	fmt.Printf("by Superstes (GPLv3)\n\n")
 }
 
@@ -28,7 +29,8 @@ func main() {
 	flag.StringVar(&cnf.DB_COUNTRY, "country", cnf.DB_COUNTRY, "Path to the country-database (optional)")
 	flag.StringVar(&cnf.DB_CITY, "city", cnf.DB_CITY, "Path to the city-database (optional)")
 	flag.StringVar(&cnf.DB_ASN, "asn", cnf.DB_ASN, "Path to the asn-database (optional)")
-	flag.StringVar(&cnf.DB_PRIVACY, "asn", cnf.DB_PRIVACY, "Path to the privacy-database (optional)")
+	flag.StringVar(&cnf.DB_PRIVACY, "privacy", cnf.DB_PRIVACY, "Path to the privacy-database (optional)")
+	flag.BoolVar(&cnf.RETURN_PLAIN, "plain", cnf.RETURN_PLAIN, "If the result should be returned in plain text format")
 	flag.Parse()
 
 	if dbType == "maxmind" {

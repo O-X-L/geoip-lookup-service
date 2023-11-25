@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"strings"
 
 	"github.com/superstes/geoip-lookup-service/cnf"
 	"github.com/superstes/geoip-lookup-service/lookup"
@@ -15,9 +16,26 @@ import (
 
 func errorResponse(w http.ResponseWriter, m string) {
 	w.WriteHeader(http.StatusBadRequest)
-	_, err := io.WriteString(w, m)
+	_, err := io.WriteString(w, fmt.Sprintf("%v\n", m))
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+func returnResult(w http.ResponseWriter, data interface{}) {
+	if cnf.RETURN_PLAIN {
+		w.Header().Set("Content-Type", "text/plain")
+		_, err := io.WriteString(w, fmt.Sprintf("%+v\n", data))
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		err := json.NewEncoder(w).Encode(data)
+		if err != nil {
+			log.Fatal(err)
+			errorResponse(w, "Failed to JSON-encode data!")
+		}
 	}
 }
 
@@ -32,51 +50,41 @@ func geoIpLookup(w http.ResponseWriter, r *http.Request) {
 
 	ip := net.ParseIP(ipStr)
 	if ip == nil {
-		errorResponse(w, "Provided IP is not valid!")
+		errorResponse(w, "Invalid IP provided")
 		return
 	}
 
-	dataStructure, lookupExists := cnf.LOOKUP[lookupStr]
-	if !lookupExists || dataStructure == nil {
-		errorResponse(w, "Provided LOOKUP is not valid!")
+	data, err := lookup.FUNC[lookupStr].(func(net.IP) (interface{}, error))(ip)
+	if data == nil {
+		errorResponse(w, "Invalid LOOKUP provided")
 		return
 	}
-
-	data, err := lookup.FUNC[lookupStr].(func(net.IP, interface{}) (interface{}, error))(
-		ip, dataStructure,
-	)
 	if err != nil {
 		log.Fatal(err)
-		errorResponse(w, "Failed to lookup data!")
+		errorResponse(w, "Failed to lookup data")
 		return
 	}
 
 	if filterStr != "" {
-		// todo: allow deeper filtering
-		defer func() {
-			if err := recover(); err != nil {
-				log.Fatal(err)
-				errorResponse(w, "Provided FILTER is not valid!")
+		filteredData := data
+		for _, subFilterStr := range strings.Split(filterStr, ".") {
+			defer func() {
+				if err := recover(); err != nil {
+					log.Fatal(err)
+					errorResponse(w, "Invalid FILTER provided")
+				}
+			}()
+			filteredData = u.GetMapValue(filteredData, subFilterStr)
+			if filteredData == nil {
+				errorResponse(w, "Invalid FILTER provided")
+				return
 			}
-		}()
-		filteredData := u.GetAttribute(data, filterStr)
-		if !filteredData.IsValid() {
-			errorResponse(w, "Provided FILTER is not valid!")
 		}
-		w.Header().Set("Content-Type", "application/json")
-		err := json.NewEncoder(w).Encode(filteredData.String())
-		if err != nil {
-			log.Fatal(err)
-			errorResponse(w, "Failed to JSON-encode data!")
-		}
+		returnResult(w, filteredData)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(data)
-	if err != nil {
-		log.Fatal(err)
-		errorResponse(w, "Failed to JSON-encode data!")
-	}
+
+	returnResult(w, data)
 	return
 }
 
