@@ -4,6 +4,8 @@ Go-based microservice to perform IP lookups in local GeoIP databases.
 
 It currently only supports databases in MMDB format.
 
+Feel free to [open a ticket](https://github.com/superstes/geoip-lookup-service/issues/new) if you encounter any issues.
+
 Providers supported:
 
 * [IPInfo](https://ipinfo.io/account/data-downloads)
@@ -11,7 +13,7 @@ Providers supported:
 
 As I don't have loads of money to spare - Testing is only done using the [IPInfo Free](https://ipinfo.io/products/free-ip-database) and [MaxMind GeoLite2](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data) databases.
 
-If you want to use their extended databases, you might encounter issues.
+If you want to use their extended databases, you might encounter problems. You are welcome to help integrating them correctly.
 
 ## Usage
 

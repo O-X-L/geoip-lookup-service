@@ -85,7 +85,6 @@ func geoIpLookup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	returnResult(w, data)
-	return
 }
 
 func httpServer(listenAddr string, listenPort uint) {
