@@ -22,19 +22,19 @@ func errorResponse(w http.ResponseWriter, m string) {
 	}
 }
 
-func returnResult(w http.ResponseWriter, data interface{}) {
+func returnResult(w http.ResponseWriter, data interface{}, logPrefix string) {
 	if cnf.RETURN_PLAIN {
 		w.Header().Set("Content-Type", "text/plain")
 		_, err := io.WriteString(w, fmt.Sprintf("%+v\n", data))
 		if err != nil {
-			log.Fatal(err)
+			u.LogError(logPrefix, err)
 		}
 	} else {
 		w.Header().Set("Content-Type", "application/json")
 		err := json.NewEncoder(w).Encode(data)
 		if err != nil {
-			log.Fatal(err)
-			errorResponse(w, "Failed to JSON-encode data!")
+			u.LogError(logPrefix, err)
+			errorResponse(w, "Failed to JSON-encode data")
 		}
 	}
 }
@@ -43,8 +43,10 @@ func geoIpLookup(w http.ResponseWriter, r *http.Request) {
 	ipStr := r.URL.Query().Get("ip")
 	lookupStr := r.URL.Query().Get("lookup")
 	filterStr := r.URL.Query().Get("filter")
+	logPrefix := fmt.Sprintf("IP: '%v', Lookup: '%v', Filter: '%v'", ipStr, lookupStr, filterStr)
+
 	if lookupStr == "" || ipStr == "" {
-		errorResponse(w, "Either 'lookup' or 'ip' were not provided!")
+		errorResponse(w, "Either 'lookup' or 'ip' were not provided")
 		return
 	}
 
@@ -60,7 +62,7 @@ func geoIpLookup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err != nil {
-		log.Fatal(err)
+		u.LogError(logPrefix, err)
 		errorResponse(w, "Failed to lookup data")
 		return
 	}
@@ -70,7 +72,7 @@ func geoIpLookup(w http.ResponseWriter, r *http.Request) {
 		for _, subFilterStr := range strings.Split(filterStr, ".") {
 			defer func() {
 				if err := recover(); err != nil {
-					log.Fatal(err)
+					u.LogError(logPrefix, err)
 					errorResponse(w, "Invalid FILTER provided")
 				}
 			}()
@@ -80,11 +82,11 @@ func geoIpLookup(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
-		returnResult(w, filteredData)
+		returnResult(w, filteredData, logPrefix)
 		return
 	}
 
-	returnResult(w, data)
+	returnResult(w, data, logPrefix)
 }
 
 func httpServer(listenAddr string, listenPort uint) {
