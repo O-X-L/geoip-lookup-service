@@ -15,6 +15,14 @@ function compile() {
     echo "COMPILING BINARY FOR ${os}-${arch}"
     GOOS="$os" GOARCH="$arch" go build -o "../build/geoip-lookup-${os}-${arch}"
     GOOS="$os" GOARCH="$arch" CGO_ENABLED=0 go build -o "../build/geoip-lookup-${os}-${arch}-CGO0"
+    if [[ "$os" == "windows" ]]
+    then
+        zip "../build/geoip-lookup-${os}-${arch}.zip" "../build/geoip-lookup-${os}-${arch}"
+        zip "../build/geoip-lookup-${os}-${arch}-CGO0.zip" "../build/geoip-lookup-${os}-${arch}-CGO0"
+    else
+        tar -czf "../build/geoip-lookup-${os}-${arch}.tar.gz" "../build/geoip-lookup-${os}-${arch}"
+        tar -czf "../build/geoip-lookup-${os}-${arch}-CGO0.tar.gz" "../build/geoip-lookup-${os}-${arch}-CGO0"
+    fi
 }
 
 compile "linux" "386"
