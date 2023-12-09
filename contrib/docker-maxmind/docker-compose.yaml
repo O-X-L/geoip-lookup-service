@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+  geoip-lookup-service:
+    build: .
+    image: geoip-lookup-service:latest
+    container_name: geoip-lookup-service
+    hostname: geoip-lookup-service
+    restart: unless-stopped
+    healthcheck:
+      test: sh -c "[ -f /var/lib/geoip-lookup/GeoLite2-ASN.mmdb ]"
+      timeout: 1s
+      retries: 20
+    command:
+      - /usr/local/bin/geoip-lookup-service
+      - '-l'
+      - '0.0.0.0'
+      - '-p'
+      - '10069'
+      - '-t'
+      - 'maxmind'
+      - '-country'
+      - '/var/lib/geoip-lookup/GeoLite2-Country.mmdb'
+      - '-asn'
+      - '/var/lib/geoip-lookup/GeoLite2-ASN.mmdb'
+      - '-city'
+      - '/var/lib/geoip-lookup/GeoLite2-City.mmdb'
+    ports:
+      - "10069:10069"
+    networks:
+      - geoipupdate
+    volumes:
+      - 'geoipupdate_data:/var/lib/geoip-lookup'
+  # Based on https://github.com/maxmind/geoipupdate/blob/main/doc/docker.md
+  geoip-update:
+    image: ghcr.io/maxmind/geoipupdate:v6.0
+    container_name: geoip-update
+    hostname: geoip-update
+    restart: unless-stopped
+    healthcheck:
+      test: sh -c "[ -f /usr/share/GeoIP/GeoLite2-ASN.mmdb ]"
+      timeout: 1s
+      retries: 20
+    env_file:
+      - geoip.env
+    environment:
+      - 'GEOIPUPDATE_EDITION_IDS=GeoLite2-ASN GeoLite2-City GeoLite2-Country'
+      - GEOIPUPDATE_FREQUENCY=72
+    networks:
+      - geoipupdate
+    volumes:
+      - 'geoipupdate_data:/usr/share/GeoIP'
+
+networks:
+  geoipupdate:
+
+volumes:
+  geoipupdate_data:
+    driver: local
