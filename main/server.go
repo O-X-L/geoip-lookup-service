@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/superstes/geoip-lookup-service/cnf"
-	"github.com/superstes/geoip-lookup-service/lookup"
-	"github.com/superstes/geoip-lookup-service/u"
+	"github.com/O-X-L/geoip-lookup-service/cnf"
+	"github.com/O-X-L/geoip-lookup-service/lookup"
+	"github.com/O-X-L/geoip-lookup-service/u"
 )
 
 func errorResponse(w http.ResponseWriter, m string) {

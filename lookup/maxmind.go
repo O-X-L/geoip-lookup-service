@@ -3,7 +3,7 @@ package lookup
 import (
 	"net"
 
-	"github.com/superstes/geoip-lookup-service/cnf"
+	"github.com/O-X-L/geoip-lookup-service/cnf"
 )
 
 func MaxMindCountry(ip net.IP) (interface{}, error) {

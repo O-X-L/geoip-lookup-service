@@ -1,4 +1,4 @@
-module github.com/superstes/geoip-lookup-service
+module github.com/O-X-L/geoip-lookup-service
 
 go 1.21.1
 

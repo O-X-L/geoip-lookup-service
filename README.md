@@ -1,4 +1,4 @@
-[![Lint](https://github.com/superstes/geoip-lookup-service/actions/workflows/lint.yml/badge.svg?branch=latest)](https://github.com/superstes/geoip-lookup-service/actions/workflows/lint.yml)
+[![Lint](https://github.com/O-X-L/geoip-lookup-service/actions/workflows/lint.yml/badge.svg?branch=latest)](https://github.com/O-X-L/geoip-lookup-service/actions/workflows/lint.yml)
 
 # GeoIP Lookup Service
 
@@ -15,11 +15,11 @@ As I don't have loads of money to spare - Testing is only done using the [IPInfo
 
 If you want to use their extended databases, you might encounter problems. You are welcome to help integrating them correctly.
 
-Feel free to [open a ticket](https://github.com/superstes/geoip-lookup-service/issues/new) if you encounter any issues.
+Feel free to [open a ticket](https://github.com/O-X-L/geoip-lookup-service/issues/new) if you encounter any issues.
 
 ## Integration
 
-* [HAProxy Community using Lua](https://github.com/superstes/haproxy-geoip)
+* [HAProxy Community using Lua](https://github.com/O-X-L/haproxy-geoip)
 
    NOTE: HAProxy provides enterprise-grade licensing that has this functionality built-in.
 
@@ -103,7 +103,7 @@ Example systemd service:
 ```text
 [Unit]
 Description=GeoIP Lookup Service
-Documentation=https://github.com/superstes/geoip-lookup-service
+Documentation=https://github.com/O-X-L/geoip-lookup-service
 
 [Service]
 Type=simple

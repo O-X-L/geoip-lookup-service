@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/superstes/geoip-lookup-service/cnf"
+	"github.com/O-X-L/geoip-lookup-service/cnf"
 )
 
 func welcome() {
@@ -15,7 +15,7 @@ func welcome() {
 	fmt.Println("\\____/\\___/\\____/___/_/      /_____/\\____/\\____/_/|_|\\__,_/ .___/ ")
 	fmt.Println("                                                         /_/      ")
 	fmt.Printf("Version: %v\n", cnf.VERSION)
-	fmt.Printf("by Superstes (GPLv3)\n\n")
+	fmt.Printf("by OXL IT Services (License: MIT)\n\n")
 }
 
 func main() {
