@@ -6,16 +6,25 @@ Go-based microservice to perform IP lookups in local GeoIP databases.
 
 It currently only supports databases in **MMDB format**.
 
-**Providers supported**:
-
-* [IPInfo](https://ipinfo.io/account/data-downloads)
-* [MaxMind](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data)
-
-As I don't have loads of money to spare - Testing is only done using the [IPInfo Free](https://ipinfo.io/products/free-ip-database) and [MaxMind GeoLite2](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data) databases.
-
 If you want to use their extended databases, you might encounter problems. You are welcome to help integrating them correctly.
 
 Feel free to [open a ticket](https://github.com/O-X-L/geoip-lookup-service/issues/new) if you encounter any issues.
+
+----
+
+## GeoIP Provider Support
+
+* **IPInfo**: [Information](https://ipinfo.io/products/free-ip-database), [CC4 License](https://creativecommons.org/licenses/by-sa/4.0/) (*allows for commercial usage - you need to add an attribution*)
+
+    **Attribution**: `<p>IP address data powered by <a href="https://ipinfo.io">IPinfo</a></p>`
+
+* **MaxMind**: [Information](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data), [EULA](https://www.maxmind.com/en/geolite2/eula) (*allows for limited commercial usage - you need to add an attribution*)
+
+    **Attribution**: `This product includes GeoLite2 data created by MaxMind, available from <a href="https://www.maxmind.com">https://www.maxmind.com</a>.
+
+These two providers were tested.
+
+----
 
 ## Integration
 
