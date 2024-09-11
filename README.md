@@ -89,6 +89,9 @@ curl "http://127.0.0.1:10069/?ip=8.8.8.8&lookup=country&filter=country.names.en"
 
 curl "http://127.0.0.1:10069/?ip=8.8.8.8&lookup=city&filter=location"
 > {"accuracy_radius":1000,"latitude":37.751,"longitude":-97.822,"time_zone":"America/Chicago"}
+
+# listen on all external IPs
+./geoip_lookup_service -l 0.0.0.0 -p 10069 ...
 ```
 
 ----

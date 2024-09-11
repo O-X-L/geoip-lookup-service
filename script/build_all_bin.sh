@@ -8,7 +8,7 @@ VERSION="$(cat "../cnf/main.go" | grep VERSION | cut -d '=' -f2 | tr -d ' ')"
 
 mkdir -p "../build"
 
-rm ../build/*
+rm -f ../build/*
 
 function compile() {
     os="$1" arch="$2"
@@ -30,6 +30,7 @@ compile "linux" "amd64"
 compile "linux" "arm"
 compile "linux" "arm64"
 
+# untested
 compile "freebsd" "386"
 compile "freebsd" "amd64"
 compile "freebsd" "arm"
@@ -41,6 +42,5 @@ compile "openbsd" "arm"
 compile "darwin" "amd64"
 compile "darwin" "arm64"
 
-# untested
 compile "windows" "386"
 compile "windows" "amd64"

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -39,11 +40,52 @@ func returnResult(w http.ResponseWriter, data interface{}, logPrefix string) {
 	}
 }
 
+func getClientIP(r *http.Request) (string, error) {
+	fwdIPs := strings.Split(r.Header.Get("X-Forwarded-For"), ",")
+	if len(fwdIPs) > 0 {
+		netIP := net.ParseIP(fwdIPs[len(fwdIPs)-1])
+		if netIP != nil {
+			return netIP.String(), nil
+		}
+	}
+
+	realIP := r.Header.Get("X-Real-IP")
+	if realIP != "" {
+		netIP := net.ParseIP(realIP)
+		if netIP != nil {
+			return netIP.String(), nil
+		}
+	}
+
+	ip, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		return "", err
+	}
+
+	netIP := net.ParseIP(ip)
+	if netIP != nil {
+		ip := netIP.String()
+		if ip == "::1" {
+			return "127.0.0.1", nil
+		}
+		return ip, nil
+	}
+
+	return "", errors.New("IP not found")
+}
+
 func geoIpLookup(w http.ResponseWriter, r *http.Request) {
 	ipStr := r.URL.Query().Get("ip")
 	lookupStr := r.URL.Query().Get("lookup")
 	filterStr := r.URL.Query().Get("filter")
 	logPrefix := fmt.Sprintf("IP: '%v', Lookup: '%v', Filter: '%v'", ipStr, lookupStr, filterStr)
+
+	if ipStr == "" {
+		clientIpStr, err := getClientIP(r)
+		if err == nil {
+			ipStr = clientIpStr
+		}
+	}
 
 	if lookupStr == "" || ipStr == "" {
 		errorResponse(w, "Either 'lookup' or 'ip' were not provided")

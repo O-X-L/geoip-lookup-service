@@ -1,3 +1,3 @@
 package cnf
 
-const VERSION = 1.0
+const VERSION = 1.1
