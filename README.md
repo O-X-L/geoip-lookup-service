@@ -9,6 +9,7 @@
 ----
 
 [![Lint](https://github.com/O-X-L/geoip-lookup-service/actions/workflows/lint.yml/badge.svg?branch=latest)](https://github.com/O-X-L/geoip-lookup-service/actions/workflows/lint.yml)
+[![Test](https://github.com/O-X-L/geoip-lookup-service/actions/workflows/test.yml/badge.svg?branch=latest)](https://github.com/O-X-L/geoip-lookup-service/actions/workflows/test.yml)
 
 Go-based microservice to perform IP lookups in local GeoIP databases.
 

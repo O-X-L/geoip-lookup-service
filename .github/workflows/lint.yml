@@ -8,11 +8,17 @@ on:
     paths:
       - '**.go'
       - '.github/workflows/lint.yml'
+      - 'scripts/lint.sh'
+      - '.golangci_warn.yml'
+      - '.golangci_fail.yml'
   pull_request:
     branches: [latest, v*]
     paths:
       - '**.go'
       - '.github/workflows/lint.yml'
+      - 'scripts/lint.sh'
+      - '.golangci_warn.yml'
+      - '.golangci_fail.yml'
 
 jobs:
   build:
@@ -20,24 +26,23 @@ jobs:
     timeout-minutes: 2
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
-      - name: Install python
-        uses: actions/setup-python@v4
+      - name: Set up Go
+        uses: actions/setup-go@v6
         with:
-          python-version: '3.10'
+          go-version-file: 'src/go.mod'
 
-      - uses: actions/setup-go@v4
-        with:
-          go-version: '1.21'
-
-      - name: Build binary
+      # NOTE: not using 'golangci/golangci-lint-action' because of warn/error split
+      - name: Install dependencies
         run: |
-          cd main/
-          go build
-        shell: bash
+          sudo apt install curl
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(go env GOPATH)/bin v2.6.0
 
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3
-        with:
-          args: '--config=.golangci.yml --out-format=colored-line-number'
+      - name: Verifying golangci-lint
+        run: |
+          which golangci-lint
+          golangci-lint version
+
+      - name: Linting
+        run: bash scripts/lint.sh

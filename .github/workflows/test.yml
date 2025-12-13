@@ -1,0 +1,70 @@
+---
+
+name: Test
+
+on:
+  push:
+    branches: [latest, v*]
+    paths:
+      - '**.go'
+      - '.github/workflows/test.yml'
+      - 'scripts/test*.sh'
+  pull_request:
+    branches: [latest, v*]
+    paths:
+      - '**.go'
+      - '.github/workflows/test.yml'
+      - 'scripts/test*.sh'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: pr-test
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: 'src/go.mod'
+
+      - name: Build binary
+        run: go build -o /tmp/geoip-lookup src/cmd/main.go
+        shell: bash
+
+      - name: Downloading GeoIP databases
+        run: |
+          sudo apt install wget unzip
+          cd /tmp
+
+          wget -O ./maxmind_asn.mmdb -o /dev/null https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-ASN.mmdb
+          wget -O ./maxmind_country.mmdb -o /dev/null https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-Country.mmdb
+          wget -O ./maxmind_city.mmdb -o /dev/null https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb
+
+          wget --header="Authorization: Bearer ${IPINFO_API_TOKEN}" -O ./ipinfo_lite.mmdb -o /dev/null https://ipinfo.io/data/ipinfo_lite.mmdb
+
+          wget -O ./oxl_asn.mmdb.zip -o /dev/null https://geoip.oxl.app/file/asn_ipv4_small.mmdb.zip
+          unzip ./oxl_asn.mmdb.zip >/dev/null
+          mv ./asn_ipv4_small.mmdb oxl_asn.mmdb
+
+          ls -l /tmp/*.mmdb
+        shell: bash
+        env:
+          IPINFO_API_TOKEN: "${{ secrets.IPINFO_API_TOKEN }}"
+
+      - name: Running Tests
+        run: |
+          FILE_LOG='/tmp/geoip-lookup-test.log'
+          bash scripts/test.sh '/tmp' | tee -a "$FILE_LOG"
+
+          echo ''
+          echo ''
+          if grep -E 'ERROR|Invalid' < "$FILE_LOG"
+          then
+            echo '### FAILED ###'
+            exit 1
+          fi
+          echo '### SUCCESS ###'
+        shell: bash

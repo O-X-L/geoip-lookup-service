@@ -1,0 +1,45 @@
+---
+
+# https://golangci-lint.run/docs/configuration/file/
+
+version: "2"
+
+run:
+  go: '1.25.3'
+
+output:
+  formats:
+    # text:
+    #   path: 'stdout'
+    #   print-linter-name: false
+    #   print-issued-lines: true
+    #   colors: true
+    # json:
+    #   path: 'stdout'
+    tab:
+      path: 'stdout'
+      print-linter-name: true
+      colors: true
+
+  sort-order:
+    - file
+    - severity
+    # - linter
+
+severity:
+  default: error
+  rules:
+    # - linters:
+    #     - unused
+    #     - errcheck
+    #   severity: warning
+
+linters:
+# these will be checked in the warn-only run as warnings will also be a failure:
+#   https://github.com/golangci/golangci-lint/issues/1981
+  exclusions:
+    rules:
+      - path: \.go
+        linters:
+          - errcheck
+          - unused  # todo: change after initial setup..
