@@ -1,15 +1,15 @@
-FROM --platform=${BUILDPLATFORM} golang:1.21-alpine3.19 AS builder
+FROM --platform=${BUILDPLATFORM} golang:1.25-alpine3.23 AS builder
 
-ENV GEOIP_LOOKUP_SERVICE_URL https://github.com/superstes/geoip-lookup-service/archive/refs/tags/1.0.tar.gz
+ENV GEOIP_LOOKUP_SERVICE_URL https://github.com/superstes/geoip-lookup-service/archive/refs/tags/1.2.tar.gz
 
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
-WORKDIR $GOPATH/src/github.com/superstes/geoip-lookup-service
+WORKDIR $GOPATH/src/github.com/O-X-L/geoip-lookup-service
 
 RUN set -eux; \
         wget -O geoip-lookup-service.tar.gz "$GEOIP_LOOKUP_SERVICE_URL"; \
-        tar -xzf geoip-lookup-service.tar.gz -C $GOPATH/src/github.com/superstes/geoip-lookup-service --strip-components=1; \
+        tar -xzf geoip-lookup-service.tar.gz -C $GOPATH/src/github.com/O-X-L/geoip-lookup-service --strip-components=1; \
         rm geoip-lookup-service.tar.gz; \
         case ${TARGETPLATFORM} in \
             "linux/amd64")  GOARCH=amd64  ;; \
@@ -21,9 +21,9 @@ RUN set -eux; \
             "linux/arm/v7") GOARCH=arm GOARM=7 ;; \
         esac; \
         printf "Building geoip-lookup-service for arch ${GOARCH}\n"; \
-        GOARCH=${GOARCH} go build -a -o /geoip-lookup-service github.com/superstes/geoip-lookup-service/main
+        GOARCH=${GOARCH} go build -a -o /geoip-lookup-service github.com/O-X-L/geoip-lookup-service/src/cmd/main.go
 
-FROM alpine:3.19
+FROM alpine:3.23
 
 RUN set -eux; \
         addgroup --gid 99 --system geoip-lookup; \
