@@ -53,14 +53,28 @@ You can send a query and receive the result as response:
 
 ```bash
 chmod +x geoip_lookup_service
+
+./geoip_lookup_service --help
+>   -asn string
+>         Path to the asn-database (optional)
+>   -city string
+>         Path to the city-database (optional)
+>   -country string
+>         Path to the country-database (optional)
+>   -l string
+>         Address to listen on (default "127.0.0.1")
+>   -lite string
+>         Path to the Lite-database (only for IPInfo; optional)
+>   -p uint
+>         Port to listen on (default 10000)
+>   -plain
+>         If the result should be returned in plain text format
+>   -privacy string
+>         Path to the privacy-database (optional)
+>   -t string
+>         Database type to use (ipinfo or maxmind) (default "ipinfo")
+
 ./geoip_lookup_service -l 127.0.0.1 -p 10069 -t ipinfo -country /etc/geoip/country.mmdb -asn /etc/geoip/asn.mmdb -city /etc/geoip/city.mmdb
-# -l = listen address (default=127.0.0.1)
-# -p = listen port (default=10000)
-# -plain = response in plain text format (default=false)
-# -t = database type (ipinfo/maxmind) (default=ipinfo)
-# -country = path to country-database (default=/etc/geoip/country.mmdb)
-# -city = path to city-database (default=/etc/geoip/city.mmdb)
-# -asn = path to asn-database (default=/etc/geoip/asn.mmdb)
 
 curl "http://127.0.0.1:10069/?lookup=country&ip=1.1.1.1"
 > {"continent":"NA","continent_name":"North America","country":"US","country_name":"United States"}

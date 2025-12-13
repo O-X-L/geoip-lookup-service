@@ -5,6 +5,17 @@ import "net"
 const DB_TYPE_IPINFO uint8 = 1
 
 // IPInfo schema: https://github.com/ipinfo/sample-database/
+var IPINFO_LITE struct {
+	Network       net.IP `maxminddb:"network"`
+	Country       string `maxminddb:"country_code"`
+	CountryName   string `maxminddb:"country"`
+	Continent     string `maxminddb:"continent_code"`
+	ContinentName string `maxminddb:"continent"`
+	ASN           string `maxminddb:"asn"`
+	Name          string `maxminddb:"as_name"`
+	Domain        string `maxminddb:"as_domain"`
+}
+
 var IPINFO_COUNTRY struct {
 	StartIp       net.IP `maxminddb:"start_ip"`
 	EndIp         net.IP `maxminddb:"end_ip"`

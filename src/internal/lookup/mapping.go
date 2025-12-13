@@ -3,8 +3,8 @@ package lookup
 import (
 	"net"
 
+	"git.oxl.at/geoip-lookup-service/internal/cnf"
 	"github.com/oschwald/maxminddb-golang"
-	"github.com/O-X-L/geoip-lookup-service/cnf"
 )
 
 var FUNC_MAPPING = map[uint8]interface{}{

@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"encoding/json"
@@ -10,9 +10,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/O-X-L/geoip-lookup-service/cnf"
-	"github.com/O-X-L/geoip-lookup-service/lookup"
-	"github.com/O-X-L/geoip-lookup-service/u"
+	"git.oxl.at/geoip-lookup-service/internal/cnf"
+	"git.oxl.at/geoip-lookup-service/internal/lookup"
+	u "git.oxl.at/geoip-lookup-service/internal/util"
 )
 
 func errorResponse(w http.ResponseWriter, m string) {
@@ -74,7 +74,7 @@ func getClientIP(r *http.Request) (string, error) {
 	return "", errors.New("IP not found")
 }
 
-func geoIpLookup(w http.ResponseWriter, r *http.Request) {
+func handleGeoIPLookup(w http.ResponseWriter, r *http.Request) {
 	ipStr := r.URL.Query().Get("ip")
 	lookupStr := r.URL.Query().Get("lookup")
 	filterStr := r.URL.Query().Get("filter")
@@ -131,8 +131,8 @@ func geoIpLookup(w http.ResponseWriter, r *http.Request) {
 	returnResult(w, data, logPrefix)
 }
 
-func httpServer(listenAddr string, listenPort uint) {
-	http.HandleFunc("/", geoIpLookup)
+func HttpServer(listenAddr string, listenPort uint) {
+	http.HandleFunc("/", handleGeoIPLookup)
 	var listenStr = fmt.Sprintf("%v:%v", listenAddr, listenPort)
 	fmt.Println("Listening on http://" + listenStr)
 	log.Fatal(http.ListenAndServe(listenStr, nil))

@@ -4,7 +4,8 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/O-X-L/geoip-lookup-service/cnf"
+	"git.oxl.at/geoip-lookup-service/internal"
+	"git.oxl.at/geoip-lookup-service/internal/cnf"
 )
 
 func welcome() {
@@ -26,6 +27,7 @@ func main() {
 	flag.StringVar(&listenAddr, "l", "127.0.0.1", "Address to listen on")
 	flag.UintVar(&listenPort, "p", 10000, "Port to listen on")
 	flag.StringVar(&dbType, "t", "ipinfo", "Database type to use (ipinfo or maxmind)")
+	flag.StringVar(&cnf.DB_LITE, "lite", cnf.DB_LITE, "Path to the Lite-database (only for IPInfo; optional)")
 	flag.StringVar(&cnf.DB_COUNTRY, "country", cnf.DB_COUNTRY, "Path to the country-database (optional)")
 	flag.StringVar(&cnf.DB_CITY, "city", cnf.DB_CITY, "Path to the city-database (optional)")
 	flag.StringVar(&cnf.DB_ASN, "asn", cnf.DB_ASN, "Path to the asn-database (optional)")
@@ -40,5 +42,5 @@ func main() {
 	}
 
 	welcome()
-	httpServer(listenAddr, listenPort)
+	internal.HttpServer(listenAddr, listenPort)
 }

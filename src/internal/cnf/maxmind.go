@@ -22,8 +22,10 @@ var MAXMIND_COUNTRY struct {
 }
 
 var MAXMIND_ASN struct {
-	ASN  string `maxminddb:"autonomous_system_number"`
-	Name string `maxminddb:"autonomous_system_organization"`
+	ASN          string `maxminddb:"autonomous_system_number"`
+	Name         string `maxminddb:"autonomous_system_organization"`
+	ISP          string `maxminddb:"isp"`
+	Organization string `maxminddb:"organization"`
 }
 
 var MAXMIND_CITY struct {
