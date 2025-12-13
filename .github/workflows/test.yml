@@ -31,7 +31,10 @@ jobs:
           go-version-file: 'src/go.mod'
 
       - name: Build binary
-        run: go build -o /tmp/geoip-lookup src/cmd/main.go
+        run: |
+          cd ./src/
+          go mod tidy
+          go build -o /tmp/geoip-lookup src/cmd/main.go
         shell: bash
 
       - name: Downloading GeoIP databases

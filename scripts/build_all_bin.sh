@@ -14,7 +14,7 @@ mkdir -p "$PATH_BUILD"
 
 rm -f "$PATH_BUILD"/*
 
-APP_NAME="geoip-lookup-"
+APP_NAME="geoip-lookup"
 
 function compile() {
     os="$1" arch="$2"
