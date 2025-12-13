@@ -34,7 +34,7 @@ jobs:
         run: |
           cd ./src/
           go mod tidy
-          go build -o /tmp/geoip-lookup src/cmd/main.go
+          go build -o /tmp/geoip-lookup cmd/main.go
         shell: bash
 
       - name: Downloading GeoIP databases
