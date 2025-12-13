@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"strings"
 
 	"git.oxl.at/geoip-lookup-service/internal"
 	"git.oxl.at/geoip-lookup-service/internal/cnf"
@@ -35,8 +36,12 @@ func main() {
 	flag.BoolVar(&cnf.RETURN_PLAIN, "plain", cnf.RETURN_PLAIN, "If the result should be returned in plain text format")
 	flag.Parse()
 
+	dbType = strings.ToLower(dbType)
+
 	if dbType == "maxmind" {
 		cnf.DB_TYPE = cnf.DB_TYPE_MAXMIND
+	} else if dbType == "oxl" {
+		cnf.DB_TYPE = cnf.DB_TYPE_OXL
 	} else {
 		cnf.DB_TYPE = cnf.DB_TYPE_IPINFO
 	}

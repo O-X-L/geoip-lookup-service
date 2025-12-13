@@ -20,5 +20,9 @@ func GetMapValue(dataStructure interface{}, name string) interface{} {
 }
 
 func LogError(prefix string, err interface{}) {
-	log.Fatalf("%v, Error: %v", prefix, err)
+	log.Printf("ERROR: %v | %v\n", prefix, err)
+}
+
+func LogWarn(prefix string, err interface{}) {
+	log.Printf("WARNING: %v | %v\n", prefix, err)
 }

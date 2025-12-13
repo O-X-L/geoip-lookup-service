@@ -24,12 +24,14 @@ func errorResponse(w http.ResponseWriter, m string) {
 }
 
 func returnResult(w http.ResponseWriter, data interface{}, logPrefix string) {
-	if cnf.RETURN_PLAIN {
+	result := fmt.Sprintf("%+v\n", data)
+	if cnf.RETURN_PLAIN || (!strings.Contains(result, "[") && !strings.Contains(result, "{")) {
 		w.Header().Set("Content-Type", "text/plain")
-		_, err := io.WriteString(w, fmt.Sprintf("%+v\n", data))
+		_, err := io.WriteString(w, result)
 		if err != nil {
 			u.LogError(logPrefix, err)
 		}
+
 	} else {
 		w.Header().Set("Content-Type", "application/json")
 		err := json.NewEncoder(w).Encode(data)
@@ -78,7 +80,7 @@ func handleGeoIPLookup(w http.ResponseWriter, r *http.Request) {
 	ipStr := r.URL.Query().Get("ip")
 	lookupStr := r.URL.Query().Get("lookup")
 	filterStr := r.URL.Query().Get("filter")
-	logPrefix := fmt.Sprintf("IP: '%v', Lookup: '%v', Filter: '%v'", ipStr, lookupStr, filterStr)
+	logPrefix := fmt.Sprintf("lookup=%v, filter=%v, ip=%v", lookupStr, filterStr, ipStr)
 
 	if ipStr == "" {
 		clientIpStr, err := getClientIP(r)
@@ -92,35 +94,58 @@ func handleGeoIPLookup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ip := net.ParseIP(ipStr)
-	if ip == nil {
-		errorResponse(w, "Invalid IP provided")
+	// ease-of-use: allow users to only supply commonly used filters - we pick the correct DB-type for them
+	if filterStr == "" {
+		if value, exists := cnf.LOOKUP_FILTER_SHORTCUTS[cnf.DB_TYPE][lookupStr]; exists {
+			filterStr = lookupStr
+			lookupStr = value
+		}
+	} else if filterStr == "*" {
+		filterStr = ""
+	}
+	logPrefix = fmt.Sprintf("lookup=%v, filter=%v, ip=%v", lookupStr, filterStr, ipStr)
+
+	lookupFunc, validLookup := lookup.FUNC_MAPPING[cnf.DB_TYPE][lookupStr]
+	if lookupFunc == nil || !validLookup {
+		u.LogWarn(logPrefix, "Invalid Lookup")
+		errorResponse(w, "Invalid LOOKUP provided")
 		return
 	}
 
-	data, err := lookup.FUNC[lookupStr].(func(net.IP) (interface{}, error))(ip)
+	ip := net.ParseIP(ipStr)
+	if ip == nil {
+		u.LogWarn(logPrefix, "Invalid IP")
+		errorResponse(w, "Invalid IP provided")
+		return
+	}
+	logPrefix = fmt.Sprintf("lookup=%v, filter=%v, ip=%v", lookupStr, filterStr, ipStr)
+
+	data, err := lookupFunc(ip)
 	if data == nil {
+		u.LogWarn(logPrefix, "Invalid Lookup")
 		errorResponse(w, "Invalid LOOKUP provided")
 		return
 	}
 	if err != nil {
-		u.LogError(logPrefix, err)
+		u.LogError(logPrefix, fmt.Sprintf("Lookup failed: %v", err))
 		errorResponse(w, "Failed to lookup data")
 		return
 	}
 
 	if filterStr != "" {
+		defer func() {
+			if err := recover(); err != nil {
+				// private ips or non-existant attributes
+				u.LogWarn(logPrefix, "IP not in MMDB or filtering on non-existant attribute")
+				returnResult(w, "", logPrefix)
+			}
+		}()
 		filteredData := data
 		for _, subFilterStr := range strings.Split(filterStr, ".") {
-			defer func() {
-				if err := recover(); err != nil {
-					u.LogError(logPrefix, err)
-					errorResponse(w, "Invalid FILTER provided")
-				}
-			}()
 			filteredData = u.GetMapValue(filteredData, subFilterStr)
 			if filteredData == nil {
-				errorResponse(w, "Invalid FILTER provided")
+				u.LogWarn(logPrefix, "Filtering on non-existant attribute")
+				returnResult(w, "", logPrefix)
 				return
 			}
 		}

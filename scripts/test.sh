@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "INFO: For MMDB-download-links see => https://github.com/O-X-L/geoip-lookup-service/blob/latest/.github/workflows/test.yml#L40"
+
 if [ -z "$1" ]
 then
   PATH_DB="${HOME}/Downloads"
@@ -9,7 +11,8 @@ fi
 
 set -euo pipefail
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
+PATH_BASE="$(pwd)"
 
 function kill_ps() {
   pkill -f "/tmp/geoip_lookup_*" > /dev/null || true
@@ -21,30 +24,30 @@ kill_ps
 echo ''
 echo "### TESTING IPINFO DATABASES ###"
 
-./build_run.sh "ipinfo" "$PATH_DB" > /dev/null &
+bash "${PATH_BASE}/scripts/build_run.sh" "ipinfo" "$PATH_DB" > /dev/null &
 sleep 1
 export DB_TYPE="IPINFO"
-./test_requests_ipinfo.sh
+bash "${PATH_BASE}/test/test_requests_ipinfo.sh"
 
 kill_ps
 
 echo ''
 echo "### TESTING MAXMIND DATABASES ###"
 
-./build_run.sh "maxmind" "$PATH_DB" > /dev/null &
+bash "${PATH_BASE}/scripts/build_run.sh" "maxmind" "$PATH_DB" > /dev/null &
 sleep 1
 export DB_TYPE="MAXMIND"
-./test_requests_maxmind.sh
+bash "${PATH_BASE}/test/test_requests_maxmind.sh"
 
 kill_ps
 
 echo ''
 echo "### TESTING OXL DATABASES ###"
 
-./build_run.sh "oxl" "$PATH_DB" > /dev/null &
+bash "${PATH_BASE}/scripts/build_run.sh" "oxl" "$PATH_DB" > /dev/null &
 sleep 1
 export DB_TYPE="OXL"
-./test_requests_oxl.sh
+bash "${PATH_BASE}/test/test_requests_oxl.sh"
 
 kill_ps
 

@@ -1,7 +1,7 @@
 package cnf
 
 var (
-	DB_TYPE      = DB_TYPE_IPINFO
+	DB_TYPE      = DB_TYPE_NONE
 	DB_LITE      = ""
 	DB_COUNTRY   = ""
 	DB_CITY      = ""

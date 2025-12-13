@@ -1,8 +1,6 @@
 package cnf
 
-import "net"
-
-const DB_TYPE_OXL uint8 = 3
+const DB_TYPE_OXL uint = 3
 
 type contact struct {
 	Name  string `maxminddb:"name"`
@@ -17,7 +15,7 @@ type socialMedia struct {
 }
 
 // OXL GEOIP-ASN schema: https://github.com/O-X-L/geoip-asn/blob/latest/schema | https://github.com/O-X-L/geoip-asn/blob/latest/example
-var OXL_ASN struct {
+type OXL_ASN struct {
 	ASN          int `maxminddb:"asn"`
 	IPv4Count    int `maxminddb:"ipv4_count"`
 	IPv6Count    int `maxminddb:"ipv6_count"`
@@ -75,12 +73,4 @@ var OXL_ASN struct {
 		Policy contact `maxminddb:"policy"`
 		Abuse  contact `maxminddb:"abuse"`
 	} `maxminddb:"contacts"`
-
-	Network       net.IP `maxminddb:"network"`
-	Country       string `maxminddb:"country_code"`
-	CountryName   string `maxminddb:"country"`
-	Continent     string `maxminddb:"continent_code"`
-	ContinentName string `maxminddb:"continent"`
-	Name          string `maxminddb:"as_name"`
-	Domain        string `maxminddb:"as_domain"`
 }

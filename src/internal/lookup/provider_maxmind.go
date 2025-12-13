@@ -7,17 +7,21 @@ import (
 )
 
 func MaxMindCountry(ip net.IP) (interface{}, error) {
-	return lookupBase(ip, cnf.MAXMIND_COUNTRY, cnf.DB_COUNTRY)
+	data := cnf.MAXMIND_COUNTRY{}
+	return lookupBase(ip, data, cnf.DB_COUNTRY)
 }
 
 func MaxMindCity(ip net.IP) (interface{}, error) {
-	return lookupBase(ip, cnf.MAXMIND_CITY, cnf.DB_CITY)
+	data := cnf.MAXMIND_CITY{}
+	return lookupBase(ip, data, cnf.DB_CITY)
 }
 
 func MaxMindAsn(ip net.IP) (interface{}, error) {
-	return lookupBase(ip, cnf.MAXMIND_ASN, cnf.DB_ASN)
+	data := cnf.MAXMIND_ASN{}
+	return lookupBase(ip, data, cnf.DB_ASN)
 }
 
 func MaxMindPrivacy(ip net.IP) (interface{}, error) {
-	return lookupBase(ip, cnf.MAXMIND_PRIVACY, cnf.DB_PRIVACY)
+	data := cnf.MAXMIND_PRIVACY{}
+	return lookupBase(ip, data, cnf.DB_PRIVACY)
 }

@@ -1,18 +1,20 @@
 package cnf
 
-const DB_TYPE_MAXMIND uint8 = 2
+const DB_TYPE_MAXMIND uint = 2
 
 // MaxMind schema: https://github.com/maxmind/MaxMind-DB/tree/main/source-data
-var MAXMIND_COUNTRY struct {
+type MAXMIND_COUNTRY struct {
 	Country struct {
-		Code         string `maxminddb:"iso_code"`
-		Id           uint   `maxminddb:"geoname_id"`
-		EuopeanUnion bool   `maxminddb:"is_in_european_union"`
+		Code          string            `maxminddb:"iso_code"`
+		Id            uint              `maxminddb:"geoname_id"`
+		EuropeanUnion bool              `maxminddb:"is_in_european_union"`
+		Names         map[string]string `maxminddb:"names"`
 	} `maxminddb:"country"`
 	RegisteredCountry struct {
-		Code         string `maxminddb:"iso_code"`
-		Id           uint   `maxminddb:"geoname_id"`
-		EuopeanUnion bool   `maxminddb:"is_in_european_union"`
+		Code          string            `maxminddb:"iso_code"`
+		Id            uint              `maxminddb:"geoname_id"`
+		EuropeanUnion bool              `maxminddb:"is_in_european_union"`
+		Names         map[string]string `maxminddb:"names"`
 	} `maxminddb:"registered_country"`
 	Continent struct {
 		Code  string            `maxminddb:"code"`
@@ -21,27 +23,30 @@ var MAXMIND_COUNTRY struct {
 	} `maxminddb:"continent"`
 }
 
-var MAXMIND_ASN struct {
+type MAXMIND_ASN struct {
 	ASN          string `maxminddb:"autonomous_system_number"`
 	Name         string `maxminddb:"autonomous_system_organization"`
 	ISP          string `maxminddb:"isp"`
 	Organization string `maxminddb:"organization"`
 }
 
-var MAXMIND_CITY struct {
+type MAXMIND_CITY struct {
 	City struct {
-		Code string `maxminddb:"iso_code"`
-		Id   uint   `maxminddb:"geoname_id"`
+		Code  string            `maxminddb:"iso_code"`
+		Id    uint              `maxminddb:"geoname_id"`
+		Names map[string]string `maxminddb:"names"`
 	} `maxminddb:"country"`
 	Country struct {
-		Code         string `maxminddb:"iso_code"`
-		Id           uint   `maxminddb:"geoname_id"`
-		EuopeanUnion bool   `maxminddb:"is_in_european_union"`
+		Code          string            `maxminddb:"iso_code"`
+		Id            uint              `maxminddb:"geoname_id"`
+		EuropeanUnion bool              `maxminddb:"is_in_european_union"`
+		Names         map[string]string `maxminddb:"names"`
 	} `maxminddb:"country"`
 	RegisteredCountry struct {
-		Code         string `maxminddb:"iso_code"`
-		Id           uint   `maxminddb:"geoname_id"`
-		EuopeanUnion bool   `maxminddb:"is_in_european_union"`
+		Code          string            `maxminddb:"iso_code"`
+		Id            uint              `maxminddb:"geoname_id"`
+		EuropeanUnion bool              `maxminddb:"is_in_european_union"`
+		Names         map[string]string `maxminddb:"names"`
 	} `maxminddb:"registered_country"`
 	Continent struct {
 		Code  string            `maxminddb:"code"`
@@ -58,12 +63,11 @@ var MAXMIND_CITY struct {
 		Code string `maxminddb:"code"`
 	} `maxminddb:"postal"`
 	Traits struct {
-		IsAnycast        bool `maxminddb:"is_anycast"`
-		IsAnonymousProxy bool `maxminddb:"is_anonymous_proxy"`
+		IsAnycast bool `maxminddb:"is_anycast"`
 	} `maxminddb:"traits"`
 }
 
-var MAXMIND_PRIVACY struct { // also called 'anonymous'
+type MAXMIND_PRIVACY struct { // also called 'anonymous'
 	Any          bool `maxminddb:"is_anonymous"`
 	Vpn          bool `maxminddb:"is_anonymous_vpn"`
 	Tor          bool `maxminddb:"is_tor_exit_node"`

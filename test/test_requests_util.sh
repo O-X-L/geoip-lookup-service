@@ -11,7 +11,9 @@ function run_test() {
   echo "RESULT: ${result}"
   if [[ "$expect" != "" ]] && [[ "$result" != "$expect" ]]
   then
-    echo "ERROR: Output not as expected => ${expect}"
+    echo -e "\033[0;31m > ERROR: Output not as expected => ${expect} \033[0m"
+  else
+    echo -e "\033[0;32m > OK \033[0m"
   fi
   echo ''
 

@@ -2,10 +2,10 @@ package cnf
 
 import "net"
 
-const DB_TYPE_IPINFO uint8 = 1
+const DB_TYPE_IPINFO uint = 1
 
 // IPInfo schema: https://github.com/ipinfo/sample-database/
-var IPINFO_LITE struct {
+type IPINFO_LITE struct {
 	Network       net.IP `maxminddb:"network"`
 	Country       string `maxminddb:"country_code"`
 	CountryName   string `maxminddb:"country"`
@@ -16,7 +16,7 @@ var IPINFO_LITE struct {
 	Domain        string `maxminddb:"as_domain"`
 }
 
-var IPINFO_COUNTRY struct {
+type IPINFO_COUNTRY struct {
 	StartIp       net.IP `maxminddb:"start_ip"`
 	EndIp         net.IP `maxminddb:"end_ip"`
 	Country       string `maxminddb:"country"`
@@ -25,7 +25,7 @@ var IPINFO_COUNTRY struct {
 	ContinentName string `maxminddb:"continent_name"`
 }
 
-var IPINFO_ASN struct {
+type IPINFO_ASN struct {
 	StartIp net.IP `maxminddb:"start_ip"`
 	EndIp   net.IP `maxminddb:"end_ip"`
 	ASN     string `maxminddb:"asn"`
@@ -33,7 +33,7 @@ var IPINFO_ASN struct {
 	Domain  string `maxminddb:"domain"`
 }
 
-var IPINFO_ASN_EXT struct {
+type IPINFO_ASN_EXT struct {
 	StartIp net.IP `maxminddb:"start_ip"`
 	EndIp   net.IP `maxminddb:"end_ip"`
 	JoinKey net.IP `maxminddb:"join_key"`
@@ -44,7 +44,7 @@ var IPINFO_ASN_EXT struct {
 	Country string `maxminddb:"country"`
 }
 
-var IPINFO_COUNTRY_ASN struct {
+type IPINFO_COUNTRY_ASN struct {
 	StartIp       net.IP `maxminddb:"start_ip"`
 	EndIp         net.IP `maxminddb:"end_ip"`
 	Country       string `maxminddb:"country"`
@@ -56,7 +56,7 @@ var IPINFO_COUNTRY_ASN struct {
 	ASDomain      string `maxminddb:"as_domain"`
 }
 
-var IPINFO_PRIVACY struct {
+type IPINFO_PRIVACY struct {
 	StartIp net.IP `maxminddb:"start_ip"`
 	EndIp   net.IP `maxminddb:"end_ip"`
 	JoinKey net.IP `maxminddb:"join_key"`
@@ -68,7 +68,7 @@ var IPINFO_PRIVACY struct {
 	Service string `maxminddb:"service"`
 }
 
-var IPINFO_CITY struct {
+type IPINFO_CITY struct {
 	StartIp    net.IP  `maxminddb:"start_ip"`
 	EndIp      net.IP  `maxminddb:"end_ip"`
 	JoinKey    net.IP  `maxminddb:"join_key"`

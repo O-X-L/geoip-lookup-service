@@ -8,13 +8,14 @@ on:
     paths:
       - '**.go'
       - '.github/workflows/test.yml'
-      - 'scripts/test*.sh'
+      - 'scripts/test.sh'
+      - 'test/*'
   pull_request:
     branches: [latest, v*]
     paths:
       - '**.go'
       - '.github/workflows/test.yml'
-      - 'scripts/test*.sh'
+      - 'test/*'
 
 jobs:
   build:

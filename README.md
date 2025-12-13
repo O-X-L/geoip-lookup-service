@@ -37,22 +37,11 @@ These three providers are currently supported. Paid DB-editions of IPInfo & MaxM
 
 ----
 
-## Integration
-
-* [HAProxy Community using Lua](https://github.com/O-X-L/haproxy-geoip)
-
-   NOTE: HAProxy provides enterprise-grade licensing that has this functionality built-in.
-
-Make sure to read the GeoIP-DB License before integrating it with any service!
-
-----
-
 ## Usage
 
 The binary starts a simple HTTP webserver.
 
 You can send a query and receive the result as response:
-
 
 ```bash
 chmod +x geoip_lookup_service
@@ -77,59 +66,82 @@ chmod +x geoip_lookup_service
 >   -t string
 >         Database type to use (ipinfo or maxmind) (default "ipinfo")
 
-./geoip_lookup_service -l 127.0.0.1 -p 10069 -t ipinfo -country /etc/geoip/country.mmdb -asn /etc/geoip/asn.mmdb -city /etc/geoip/city.mmdb
+./geoip_lookup_service -l 127.0.0.1 -p 10069 -t ipinfo -lite /etc/geoip/ipinfo_lite.mmdb
 
-curl "http://127.0.0.1:10069/?lookup=country&ip=1.1.1.1"
+curl "http://127.0.0.1:10069/?lookup=country&filter=*&ip=1.1.1.1"
 > {"continent":"NA","continent_name":"North America","country":"US","country_name":"United States"}
 
-curl "http://127.0.0.1:10069/?lookup=country&ip=1.1.1.1&filter=country"
-> "US"
+curl "http://127.0.0.1:10069/?lookup=country&filter=country&ip=1.1.1.1"
+> US
 
-curl "http://127.0.0.1:10069/?lookup=asn&ip=1.1.1.1"
+curl "http://127.0.0.1:10069/?lookup=asn&filter=*&ip=1.1.1.1"
 > {"asn":"AS13335","domain":"cloudflare.com","name":"Cloudflare, Inc."}
 
-# use the 'plain' flag to get single attributes without JSON formatting
-./geoip_lookup_service -plain ...
-curl "http://127.0.0.1:10069/?lookup=country&ip=1.1.1.1&filter=country_name"
-> United States
-
 # use other DB-type
-./geoip_lookup_service -t maxmind ...
+./geoip_lookup_service -t maxmind -country /etc/geoip/country.mmdb -asn /etc/geoip/asn.mmdb -city /etc/geoip/city.mmdb ...
 
-curl "http://127.0.0.1:10069/?ip=1.1.1.1&lookup=asn"
+curl "http://127.0.0.1:10069/?ip=1.1.1.1&lookup=asn&filter=*"
 > {"autonomous_system_number":13335,"autonomous_system_organization":"CLOUDFLARENET"}
 
-curl "http://127.0.0.1:10069/?ip=1.1.1.1&lookup=country"
+curl "http://127.0.0.1:10069/?ip=1.1.1.1&lookup=country&filter=*"
 > {"registered_country":{"geoname_id":2077456,"iso_code":"AU","names":{"de":"Australien","en":"Australia","es":"Australia","fr":"Australie","ja":"オーストラリア","pt-BR":"Austrália","ru":"Австралия","zh-CN":"澳大利亚"}}}
 
-# filters can also be used to get deeper attributes
-curl "http://127.0.0.1:10069/?ip=8.8.8.8&lookup=country"
+# filters can also be used to get nested attributes
+curl "http://127.0.0.1:10069/?ip=8.8.8.8&lookup=country&filter=*"
 > {"continent":{"code":"NA","geoname_id":6255149,"names":{"de":"Nordamerika","en":"North America","es":"Norteamérica","fr":"Amérique du Nord","ja":"北アメリカ","pt-BR":"América do Norte","ru":"Северная Америка","zh-CN":"北美洲"}},"country":{"geoname_id":6252001,"iso_code":"US","names":{"de":"Vereinigte Staaten","en":"United States","es":"Estados Unidos","fr":"États Unis","ja":"アメリカ","pt-BR":"EUA","ru":"США","zh-CN":"美国"}},"registered_country":{"geoname_id":6252001,"iso_code":"US","names":{"de":"Vereinigte Staaten","en":"United States","es":"Estados Unidos","fr":"États Unis","ja":"アメリカ","pt-BR":"EUA","ru":"США","zh-CN":"美国"}}}
 
 curl "http://127.0.0.1:10069/?ip=8.8.8.8&lookup=country&filter=country.iso_code"
-> "US"
+> US
 
 curl "http://127.0.0.1:10069/?ip=8.8.8.8&lookup=country&filter=country.names.en"
-> "United States"
+> United States
 
 curl "http://127.0.0.1:10069/?ip=8.8.8.8&lookup=city&filter=location"
 > {"accuracy_radius":1000,"latitude":37.751,"longitude":-97.822,"time_zone":"America/Chicago"}
 
 # listen on all external IPs
 ./geoip_lookup_service -l 0.0.0.0 -p 10069 ...
+
+# use filter-shortcuts for the most commonly used filters (simply use the filter as lookup)
+curl "http://127.0.0.1:10069/?ip=8.8.8.8&lookup=country.iso_code"
+> US
+
+curl "http://127.0.0.1:10069/?ip=8.8.8.8&lookup=country.names.en"
+> United States
 ```
+
+----
+
+## Integration
+
+* [HAProxy Community using Lua](https://github.com/O-X-L/haproxy-geoip)
+
+   NOTE: HAProxy provides enterprise-grade licensing that has this functionality built-in.
+
+Make sure to read the GeoIP-DB License before integrating it with any service!
 
 ----
 
 ## Testing
 
-Basic integration tests are done by using the test-script:
+We perform functional tests for all supported providers.
 
-```bash
-bash scripts/test.sh
-```
+See: [Test Cases](https://github.com/O-X-L/geoip-lookup-service/tree/latest/test)
 
 Feel free to contribute more test-cases if you found some edge-case issue(s).
+
+### Run
+
+To run them you need to:
+
+* [Download all necessary MMDB-files](https://github.com/O-X-L/geoip-lookup-service/blob/latest/.github/workflows/test.yml#L40).
+* [Install go](https://go.dev/doc/install)
+* Run the tests:
+
+  ```bash
+  bash scripts/test.sh
+  ```
+
 
 ----
 
@@ -144,7 +156,7 @@ Documentation=https://github.com/O-X-L/geoip-lookup-service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/geoip-lookup -l 127.0.0.1 -p 10069 -t ipinfo -country /etc/geoip/country.mmdb -asn /etc/geoip/asn.mmdb -city /etc/geoip/city.mmdb
+ExecStart=/usr/bin/geoip-lookup -l 127.0.0.1 -p 10069 -t ipinfo -lite /etc/geoip/ipinfo_lite.mmdb
 
 # service-user only needs read-access to databases
 User=geoip

@@ -6,6 +6,7 @@ cd "$(dirname "$0")/.."
 
 PATH_BASE="$(pwd)"
 PATH_BUILD="${PATH_BASE}/build"
+PATH_SRC="${PATH_BASE}/src"
 
 cd "${PATH_BASE}/src"
 VERSION="$(cat "./internal/cnf/main.go" | grep VERSION | cut -d '=' -f2 | tr -d ' ')"
@@ -18,18 +19,22 @@ APP_NAME="geoip-lookup"
 
 function compile() {
     os="$1" arch="$2"
+    cd "$PATH_SRC"
     echo "COMPILING BINARY FOR ${os}-${arch}"
     GOOS="$os" GOARCH="$arch" go build -o "${PATH_BUILD}/${APP_NAME}-${os}-${arch}" cmd/main.go
     GOOS="$os" GOARCH="$arch" CGO_ENABLED=0 go build -o "${PATH_BUILD}/${APP_NAME}-${os}-${arch}-CGO0" cmd/main.go
+
+    cd "$PATH_BUILD"
     if [[ "$os" == "windows" ]]
     then
-        zip "${PATH_BUILD}/${APP_NAME}-${os}-${arch}.zip" "${PATH_BUILD}/${APP_NAME}-${os}-${arch}"
-        zip "${PATH_BUILD}/${APP_NAME}-${os}-${arch}-CGO0.zip" "${PATH_BUILD}/${APP_NAME}-${os}-${arch}-CGO0"
+        zip "./${APP_NAME}-${os}-${arch}.zip" "./${APP_NAME}-${os}-${arch}"
+        zip "./${APP_NAME}-${os}-${arch}-CGO0.zip" "./${APP_NAME}-${os}-${arch}-CGO0"
     else
-        tar -czf "${PATH_BUILD}/${APP_NAME}-${os}-${arch}.tar.gz" "${PATH_BUILD}/${APP_NAME}-${os}-${arch}"
-        tar -czf "${PATH_BUILD}/${APP_NAME}-${os}-${arch}-CGO0.tar.gz" "${PATH_BUILD}/${APP_NAME}-${os}-${arch}-CGO0"
+        tar -czf "./${APP_NAME}-${os}-${arch}.tar.gz" "./${APP_NAME}-${os}-${arch}"
+        tar -czf "./${APP_NAME}-${os}-${arch}-CGO0.tar.gz" "./${APP_NAME}-${os}-${arch}-CGO0"
     fi
 }
+
 
 compile "linux" "386"
 compile "linux" "amd64"
@@ -50,3 +55,5 @@ compile "darwin" "arm64"
 
 compile "windows" "386"
 compile "windows" "amd64"
+
+echo "COMMAND TO REMOVE ALL NON-ARCHIVES: find ${PATH_BUILD} -type f ! -name '*.*' -delete"
