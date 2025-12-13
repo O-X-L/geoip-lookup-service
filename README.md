@@ -31,7 +31,9 @@ Feel free to [open a ticket](https://github.com/O-X-L/geoip-lookup-service/issue
 
     **Attribution**: `This product includes GeoLite2 data created by MaxMind, available from <a href="https://www.maxmind.com">https://www.maxmind.com</a>.`
 
-These two providers were tested.
+* **OXL**: [Information](https://github.com/O-X-L/geoip-asn) (*unrestricted usability*)
+
+These three providers are currently supported. Paid DB-editions of IPInfo & MaxMind were not tested.
 
 ----
 
