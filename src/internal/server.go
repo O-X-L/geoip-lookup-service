@@ -95,12 +95,13 @@ func handleGeoIPLookup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// ease-of-use: allow users to only supply commonly used filters - we pick the correct DB-type for them
-	if filterStr == "" {
+	switch filterStr {
+	case "":
 		if value, exists := cnf.LOOKUP_FILTER_SHORTCUTS[cnf.DB_TYPE][lookupStr]; exists {
 			filterStr = lookupStr
 			lookupStr = value
 		}
-	} else if filterStr == "*" {
+	case "*":
 		filterStr = ""
 	}
 	logPrefix = fmt.Sprintf("lookup=%v, filter=%v, ip=%v", lookupStr, filterStr, ipStr)

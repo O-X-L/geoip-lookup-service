@@ -38,11 +38,12 @@ func main() {
 
 	dbType = strings.ToLower(dbType)
 
-	if dbType == "maxmind" {
+	switch dbType {
+	case "maxmind":
 		cnf.DB_TYPE = cnf.DB_TYPE_MAXMIND
-	} else if dbType == "oxl" {
+	case "oxl":
 		cnf.DB_TYPE = cnf.DB_TYPE_OXL
-	} else {
+	default:
 		cnf.DB_TYPE = cnf.DB_TYPE_IPINFO
 	}
 
