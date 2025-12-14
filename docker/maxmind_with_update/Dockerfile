@@ -1,6 +1,6 @@
 FROM --platform=${BUILDPLATFORM} golang:1.25-alpine3.23 AS builder
 
-ENV GEOIP_LOOKUP_SERVICE_URL https://github.com/superstes/geoip-lookup-service/archive/refs/tags/1.2.tar.gz
+ENV GEOIP_LOOKUP_SERVICE_URL https://github.com/superstes/geoip-lookup-service/archive/refs/tags/1.3.tar.gz
 
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
