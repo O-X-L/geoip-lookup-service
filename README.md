@@ -64,7 +64,7 @@ chmod +x geoip_lookup_service
 >   -privacy string
 >         Path to the privacy-database (optional)
 >   -t string
->         Database type to use (ipinfo or maxmind) (default "ipinfo")
+>         Database type to use (IPInfo, MaxMind or OXL) (default "ipinfo")
 
 ./geoip_lookup_service -l 127.0.0.1 -p 10069 -t ipinfo -lite /etc/geoip/ipinfo_lite.mmdb
 
