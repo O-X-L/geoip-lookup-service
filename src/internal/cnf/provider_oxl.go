@@ -2,6 +2,7 @@ package cnf
 
 const DB_TYPE_OXL uint = 3
 
+// OXL GEOIP-ASN schema: https://github.com/O-X-L/geoip-asn/blob/latest/schema | https://github.com/O-X-L/geoip-asn/blob/latest/example
 type contact struct {
 	Name  string `maxminddb:"name"`
 	Email string `maxminddb:"email"`
@@ -14,7 +15,6 @@ type socialMedia struct {
 	Identifier string `maxminddb:"identifier"`
 }
 
-// OXL GEOIP-ASN schema: https://github.com/O-X-L/geoip-asn/blob/latest/schema | https://github.com/O-X-L/geoip-asn/blob/latest/example
 type OXL_ASN struct {
 	ASN          int `maxminddb:"asn"`
 	IPv4Count    int `maxminddb:"ipv4_count"`
