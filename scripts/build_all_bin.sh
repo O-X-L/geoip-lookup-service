@@ -19,6 +19,7 @@ APP_NAME="geoip-lookup"
 
 function compile() {
     os="$1" arch="$2"
+
     cd "$PATH_SRC"
     echo "COMPILING BINARY FOR ${os}-${arch}"
     GOOS="$os" GOARCH="$arch" go build -o "${PATH_BUILD}/${APP_NAME}-${os}-${arch}" cmd/main.go

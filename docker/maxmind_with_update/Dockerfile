@@ -1,10 +1,10 @@
 FROM --platform=${BUILDPLATFORM} golang:1.25-alpine3.23 AS builder
 
-ENV GEOIP_LOOKUP_SERVICE_URL https://github.com/superstes/geoip-lookup-service/archive/refs/tags/1.3.tar.gz
-
+ARG VERSION=1.3
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
+ENV GEOIP_LOOKUP_SERVICE_URL https://github.com/O-X-L/geoip-lookup-service/archive/refs/tags/${VERSION}.tar.gz
 WORKDIR $GOPATH/src/github.com/O-X-L/geoip-lookup-service
 
 RUN set -eux; \
