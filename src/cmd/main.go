@@ -3,10 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 	"strings"
 
 	"git.oxl.at/geoip-lookup-service/internal"
 	"git.oxl.at/geoip-lookup-service/internal/cnf"
+	u "git.oxl.at/geoip-lookup-service/internal/util"
 )
 
 func welcome() {
@@ -16,8 +18,36 @@ func welcome() {
 	fmt.Println("/ /_/ /  __/ /_/ // // ____/  / /___/ /_/ / /_/ / ,< / /_/ / /_/ /")
 	fmt.Println("\\____/\\___/\\____/___/_/      /_____/\\____/\\____/_/|_|\\__,_/ .___/ ")
 	fmt.Println("                                                         /_/      ")
-	fmt.Printf("Version: %v\n", cnf.VERSION)
+	fmt.Printf("Version: %s\n", cnf.VERSION)
 	fmt.Printf("by OXL IT Services (License: MIT)\n\n")
+}
+
+func checkGeoIPDB(file string) error {
+	if file != "" {
+		if _, err := os.Stat(file); os.IsNotExist(err) {
+			return fmt.Errorf("provided db-file '%s' does not exist - %v", file, err)
+		}
+	}
+	return nil
+}
+
+func checkGeoIPDBs() error {
+	if err := checkGeoIPDB(cnf.DB_LITE); err != nil {
+		return err
+	}
+	if err := checkGeoIPDB(cnf.DB_COUNTRY); err != nil {
+		return err
+	}
+	if err := checkGeoIPDB(cnf.DB_CITY); err != nil {
+		return err
+	}
+	if err := checkGeoIPDB(cnf.DB_ASN); err != nil {
+		return err
+	}
+	if err := checkGeoIPDB(cnf.DB_PRIVACY); err != nil {
+		return err
+	}
+	return nil
 }
 
 func main() {
@@ -48,5 +78,11 @@ func main() {
 	}
 
 	welcome()
+
+	if err := checkGeoIPDBs(); err != nil {
+		u.LogError("", err)
+		os.Exit(1)
+	}
+
 	internal.HttpServer(listenAddr, listenPort)
 }

@@ -133,28 +133,28 @@ func handleGeoIPLookup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if filterStr != "" {
-		defer func() {
-			if err := recover(); err != nil {
-				// private ips or non-existant attributes
-				u.LogWarn(logPrefix, "IP not in MMDB or filtering on non-existant attribute")
-				returnResult(w, "", logPrefix)
-			}
-		}()
-		filteredData := data
-		for _, subFilterStr := range strings.Split(filterStr, ".") {
-			filteredData = u.GetMapValue(filteredData, subFilterStr)
-			if filteredData == nil {
-				u.LogWarn(logPrefix, "Filtering on non-existant attribute")
-				returnResult(w, "", logPrefix)
-				return
-			}
-		}
-		returnResult(w, filteredData, logPrefix)
+	if filterStr == "" {
+		returnResult(w, data, logPrefix)
 		return
 	}
 
-	returnResult(w, data, logPrefix)
+	defer func() {
+		if err := recover(); err != nil {
+			// private ips or non-existant attributes
+			u.LogWarn(logPrefix, "IP not in MMDB or filtering on non-existant attribute")
+			returnResult(w, "", logPrefix)
+		}
+	}()
+	filteredData := data
+	for _, subFilterStr := range strings.Split(filterStr, ".") {
+		filteredData = u.GetMapValue(filteredData, subFilterStr)
+		if filteredData == nil {
+			u.LogWarn(logPrefix, "Filtering on non-existant attribute")
+			returnResult(w, "", logPrefix)
+			return
+		}
+	}
+	returnResult(w, filteredData, logPrefix)
 }
 
 func HttpServer(listenAddr string, listenPort uint) {
