@@ -41,6 +41,8 @@ These three providers are currently supported. Paid DB-editions of IPInfo & MaxM
 
 The binary starts a simple HTTP webserver.
 
+Container image: [oxlorg/geoip-lookup](https://hub.docker.com/r/oxlorg/geoip-lookup)
+
 You can send a query and receive the result as response:
 
 ```bash
