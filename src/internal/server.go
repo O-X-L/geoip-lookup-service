@@ -43,19 +43,22 @@ func returnResult(w http.ResponseWriter, data interface{}, logPrefix string) {
 }
 
 func getClientIP(r *http.Request) (string, error) {
-	fwdIPs := strings.Split(r.Header.Get("X-Forwarded-For"), ",")
-	if len(fwdIPs) > 0 {
-		netIP := net.ParseIP(fwdIPs[len(fwdIPs)-1])
-		if netIP != nil {
-			return netIP.String(), nil
+	if cnf.CLIENT_IP_FWD_HDR {
+		fwdIPs := strings.Split(r.Header.Get("X-Forwarded-For"), ",")
+		if len(fwdIPs) > 0 {
+			possibleIP := strings.TrimSpace(fwdIPs[len(fwdIPs)-1])
+			netIP := net.ParseIP(possibleIP)
+			if netIP != nil {
+				return netIP.String(), nil
+			}
 		}
-	}
 
-	realIP := r.Header.Get("X-Real-IP")
-	if realIP != "" {
-		netIP := net.ParseIP(realIP)
-		if netIP != nil {
-			return netIP.String(), nil
+		realIP := strings.TrimSpace(r.Header.Get("X-Real-IP"))
+		if realIP != "" {
+			netIP := net.ParseIP(realIP)
+			if netIP != nil {
+				return netIP.String(), nil
+			}
 		}
 	}
 

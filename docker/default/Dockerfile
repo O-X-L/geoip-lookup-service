@@ -15,11 +15,12 @@ ARG UID=9800
 ARG USER=geoip
 ENV MODE_DEV=0 \
     MODE_DEBUG=0 \
-    MODE_TEST=0
+    MODE_TEST=0 \
+    PATH_GEOIP_DB=/var/local/geoip
 
 RUN adduser --uid ${UID} --shell /usr/sbin/nologin --disabled-password ${USER} ${USER} && \
-    mkdir -p /var/local/geoip && \
-    chown -R ${USER}:${USER} /var/local/geoip
+    mkdir -p ${PATH_GEOIP_DB} && \
+    chown -R ${USER}:${USER} ${PATH_GEOIP_DB}
 
 COPY --from=builder-be /usr/local/bin/geoip-lookup /usr/local/bin/geoip-lookup
 
@@ -27,6 +28,6 @@ RUN chmod +x /usr/local/bin/geoip-lookup
 
 USER "$USER"
 
-CMD ["/usr/local/bin/geoip-lookup", "-l=0.0.0.0", "-p=10000", "-t=ipinfo", "-lite=/var/local/geoip/ipinfo_lite.mmdb"]
-# CMD ["/usr/local/bin/geoip-lookup", "-l=0.0.0.0", "-p=10000", "-t=ipinfo", "-country=/var/local/geoip/ipinfo_country.mmdb", "-asn=/var/local/geoip/ipinfo_asn.mmdb"]
-# CMD ["/usr/local/bin/geoip-lookup", "-l=0.0.0.0", "-p=10000", "-t=maxmind", "-country=/var/local/geoip/maxmind_country.mmdb", "-asn=/var/local/geoip/maxmind_asn.mmdb"]
+CMD ["/usr/local/bin/geoip-lookup", "-l=0.0.0.0", "-p=10000", "-t=ipinfo", "-lite=ipinfo_lite.mmdb"]
+# CMD ["/usr/local/bin/geoip-lookup", "-l=0.0.0.0", "-p=10000", "-t=ipinfo", "-country=ipinfo_country.mmdb", "-asn=ipinfo_asn.mmdb"]
+# CMD ["/usr/local/bin/geoip-lookup", "-l=0.0.0.0", "-p=10000", "-t=maxmind", "-country=maxmind_country.mmdb", "-asn=maxmind_asn.mmdb"]

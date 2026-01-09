@@ -22,34 +22,6 @@ func welcome() {
 	fmt.Printf("by OXL IT Services (License: MIT)\n\n")
 }
 
-func checkGeoIPDB(file string) error {
-	if file != "" {
-		if _, err := os.Stat(file); os.IsNotExist(err) {
-			return fmt.Errorf("provided db-file '%s' does not exist - %v", file, err)
-		}
-	}
-	return nil
-}
-
-func checkGeoIPDBs() error {
-	if err := checkGeoIPDB(cnf.DB_LITE); err != nil {
-		return err
-	}
-	if err := checkGeoIPDB(cnf.DB_COUNTRY); err != nil {
-		return err
-	}
-	if err := checkGeoIPDB(cnf.DB_CITY); err != nil {
-		return err
-	}
-	if err := checkGeoIPDB(cnf.DB_ASN); err != nil {
-		return err
-	}
-	if err := checkGeoIPDB(cnf.DB_PRIVACY); err != nil {
-		return err
-	}
-	return nil
-}
-
 func main() {
 	var listenAddr string
 	var listenPort uint
@@ -64,6 +36,7 @@ func main() {
 	flag.StringVar(&cnf.DB_ASN, "asn", cnf.DB_ASN, "Path to the asn-database (optional)")
 	flag.StringVar(&cnf.DB_PRIVACY, "privacy", cnf.DB_PRIVACY, "Path to the privacy-database (optional)")
 	flag.BoolVar(&cnf.RETURN_PLAIN, "plain", cnf.RETURN_PLAIN, "If the result should be returned in plain text format")
+	flag.BoolVar(&cnf.CLIENT_IP_FWD_HDR, "ip-fwd-hdr", cnf.CLIENT_IP_FWD_HDR, "If no IP was provided - try to pull the client-IP from the Forwarded-For header")
 	flag.Parse()
 
 	dbType = strings.ToLower(dbType)
@@ -79,7 +52,8 @@ func main() {
 
 	welcome()
 
-	if err := checkGeoIPDBs(); err != nil {
+	u.PrependDBDirPaths()
+	if err := u.CheckGeoIPDBs(); err != nil {
 		u.LogError("", err)
 		os.Exit(1)
 	}
