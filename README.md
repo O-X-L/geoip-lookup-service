@@ -10,6 +10,7 @@
 
 [![Lint](https://github.com/O-X-L/geoip-lookup-service/actions/workflows/lint.yml/badge.svg?branch=latest)](https://github.com/O-X-L/geoip-lookup-service/actions/workflows/lint.yml)
 [![Test](https://github.com/O-X-L/geoip-lookup-service/actions/workflows/test.yml/badge.svg?branch=latest)](https://github.com/O-X-L/geoip-lookup-service/actions/workflows/test.yml)
+[![Unit Test](https://github.com/O-X-L/geoip-lookup-service/actions/workflows/unit_test.yml/badge.svg?branch=latest)](https://github.com/O-X-L/geoip-lookup-service/actions/workflows/unit_test.yml)
 
 Go-based microservice to perform IP lookups in local GeoIP databases.
 
@@ -49,12 +50,15 @@ You can send a query and receive the result as response:
 chmod +x geoip_lookup_service
 
 ./geoip_lookup_service --help
+> Usage of build/geoip-lookup:
 >   -asn string
 >         Path to the asn-database (optional)
 >   -city string
 >         Path to the city-database (optional)
 >   -country string
 >         Path to the country-database (optional)
+>   -ip-fwd-hdr
+>         If no IP was provided - try to pull the client-IP from the Forwarded-For header
 >   -l string
 >         Address to listen on (default "127.0.0.1")
 >   -lite string
@@ -66,7 +70,7 @@ chmod +x geoip_lookup_service
 >   -privacy string
 >         Path to the privacy-database (optional)
 >   -t string
->         Database type to use (IPInfo, MaxMind or OXL) (default "ipinfo")
+>         Database type to use (ipinfo or maxmind) (default "ipinfo")
 
 ./geoip_lookup_service -l 127.0.0.1 -p 10069 -t ipinfo -lite /etc/geoip/ipinfo_lite.mmdb
 

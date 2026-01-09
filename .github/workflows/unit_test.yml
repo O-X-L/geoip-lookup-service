@@ -1,0 +1,54 @@
+---
+
+name: Unit Test
+
+on:
+  push:
+    branches: [latest]
+    paths:
+      - '**.go'
+      - '.github/workflows/unit_test.yml'
+      - 'scripts/unit_test.sh'
+  pull_request:
+    branches: [latest]
+    paths:
+      - '**.go'
+      - '.github/workflows/unit_test.yml'
+      - 'scripts/unit_test.sh'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+
+      - name: Install dependencies
+        run: |
+          sudo apt install git
+          go install gotest.tools/gotestsum@latest
+
+      - name: Download module-dependencies
+        run: go mod tidy
+
+      - name: Building Go Binary
+        run: bash scripts/build.sh
+        env:
+          MODE_TEST: '1'
+
+      - name: Running Go Tests
+        run: bash scripts/unit_test.sh
